@@ -45,7 +45,20 @@ class User(UserMixin, base):
     pass
 
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from config import engine
+
 # callback to reload the user object
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    # print(User.query.get(int(user_id)))
+    # return User.query.get(int(user_id))
+    with Session(engine) as session:
+        user = session.get(User, user_id)
+        return user
+    # with Session(engine) as session:
+    #     statement = select(User).filter_by(username=user_id)
+    #     result = session.execute(statement)
+    #     user = result.scalars().first()
+    #     return user

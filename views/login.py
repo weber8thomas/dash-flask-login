@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
+
 from dash.dependencies import Input, Output, State
 
 from server import app, User
@@ -43,6 +44,11 @@ layout = html.Div(
 )
 
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from config import engine
+
+
 @app.callback(Output('url_login', 'pathname'),
               [Input('login-button', 'n_clicks'),
               Input('uname-box', 'n_submit'),
@@ -50,15 +56,36 @@ layout = html.Div(
               [State('uname-box', 'value'),
                State('pwd-box', 'value')])
 def sucess(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
-    user = User.query.filter_by(username=input1).first()
-    if user:
-        if check_password_hash(user.password, input2):
-            login_user(user)
-            return '/success'
+
+    with Session(engine) as session:
+        statement = select(User).filter_by(username=input1)
+        result = session.execute(statement)
+        user = result.scalars().first()
+        if user:
+            if check_password_hash(user.password, input2):
+                login_user(user)
+                return '/success'
         else:
             pass
-    else:
-        pass
+    # return ''
+
+
+# @app.callback(Output('url_login', 'pathname'),
+#               [Input('login-button', 'n_clicks'),
+#               Input('uname-box', 'n_submit'),
+#                Input('pwd-box', 'n_submit')],
+#               [State('uname-box', 'value'),
+#                State('pwd-box', 'value')])
+# def sucess(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
+#     user = User.query.filter_by(username=input1).first()
+#     if user:
+#         if check_password_hash(user.password, input2):
+#             login_user(user)
+#             return '/success'
+#         else:
+#             pass
+#     else:
+#         pass
 
 
 @app.callback(Output('output-state', 'children'),
@@ -69,13 +96,17 @@ def sucess(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
                State('pwd-box', 'value')])
 def update_output(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
     if n_clicks > 0 or n_submit_uname > 0 or n_submit_pwd > 0:
-        user = User.query.filter_by(username=input1).first()
-        if user:
-            if check_password_hash(user.password, input2):
-                return ''
+        # user = User.query.filter_by(username=input1).first()
+        with Session(engine) as session:
+            statement = select(User).filter_by(username=input1)
+            result = session.execute(statement)
+            user = result.scalars().first()
+            if user:
+                if check_password_hash(user.password, input2):
+                    return ''
+                else:
+                    return 'Incorrect username or password'
             else:
                 return 'Incorrect username or password'
-        else:
-            return 'Incorrect username or password'
     else:
         return ''

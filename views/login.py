@@ -3,9 +3,12 @@ import dash_html_components as html
 
 from dash.dependencies import Input, Output, State
 
-from server import app, User
+from server import app
+from users_mgt import User
 from flask_login import login_user
 from werkzeug.security import check_password_hash
+from config import collection
+from bson.objectid import ObjectId
 
 layout = html.Div(
     children=[
@@ -15,6 +18,7 @@ layout = html.Div(
                 dcc.Location(id='url_login', refresh=True),
                 html.Div('''Please log in to continue:''', id='h1'),
                 html.Div(
+                    # method='Post',
                     children=[
                         dcc.Input(
                             placeholder='Enter your username',
@@ -42,42 +46,68 @@ layout = html.Div(
     ]
 )
 
-@app.callback(
-    Output('session', 'data'),
-    [Input('login-button', 'n_clicks')],
-    [State('uname-box', 'value'),
-     State('pwd-box', 'value')]
-)
-def store_user_data(n_clicks, input1, input2):
-    if n_clicks > 0:
-        if input1 and input2:
-            with Session(client) as session:
-                statement = select(User).filter_by(username=input1)
-                result = session.execute(statement)
-                user = result.scalars().first()
-                if user and check_password_hash(user.password, input2):
-                    # Store user data in the session
-                    return {'username': input1}
-    return {}
 
-@app.callback(
-    Output('url_login', 'pathname'),
-    [Input('session', 'data')]
-)
-def redirect_after_login(session_data):
-    if session_data is not None and 'username' in session_data:
-        return '/success'
-    return ''
 
-@app.callback(
-    Output('output-state', 'children'),
-    [Input('session', 'data'),
-     Input('uname-box', 'value'),
-     Input('pwd-box', 'value')]
-)
-def update_output(session_data, input1, input2):
-    if session_data is not None and 'username' in session_data:
+@app.callback(Output('url_login', 'pathname'),
+              [Input('login-button', 'n_clicks'),
+              Input('uname-box', 'n_submit'),
+               Input('pwd-box', 'n_submit')],
+              [State('uname-box', 'value'),
+               State('pwd-box', 'value')])
+def sucess(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
+
+    if input1 and input2:
+        # with Session(engine) as session:
+        # statement = select(User).filter_by(username=input1)
+        print(input1, input2)
+        print(collection.find_one({'username': input1}))
+        user_d = collection.find_one({'username': input1})
+        user_d_id = str(user_d["_id"])
+        user_d_username = user_d["username"]
+        user_d_password = user_d["password"]
+        user_d_email = user_d["email"]
+        user = User(user_d_username, user_d_password, user_d_email, user_d_id)
+        print(user)
+        if user:
+            if check_password_hash(user_d_password, input2):
+                login_user(user)
+                return '/success'
+        else:
+            pass
+    # else:
+    #     return ''
+
+
+
+@app.callback(Output('output-state', 'children'),
+              [Input('login-button', 'n_clicks'),
+               Input('uname-box', 'n_submit'),
+               Input('pwd-box', 'n_submit')],
+              [State('uname-box', 'value'),
+               State('pwd-box', 'value')])
+def update_output(n_clicks, n_submit_uname, n_submit_pwd, input1, input2):
+    print("XXXXXXXXXXXXXXXX")
+
+    if n_clicks > 0 or n_submit_uname > 0 or n_submit_pwd > 0:
+        print(input1, input2)
+        print(collection.find_one({'username': input1}))
+        user_d = collection.find_one({'username': input1})
+        user_d_id = user_d["_id"]
+        user_d_username = user_d["username"]
+        user_d_password = user_d["password"]
+        user_d_email = user_d["email"]
+        user = User(user_d_username, user_d_password, user_d_email, user_d_id)
+        print(user)
+        if user:
+            if check_password_hash(user_d_password, input2):
+                return ''
+            else:
+                return 'Incorrect username or password'
+        else:
+            return 'Incorrect username or password'
+    else:
         return ''
-    elif input1 is not None or input2 is not None:
-        return 'Incorrect username or password'
-    return ''
+
+
+
+

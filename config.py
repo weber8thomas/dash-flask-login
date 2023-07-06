@@ -5,13 +5,9 @@ import pymongo
 config = configparser.ConfigParser()
 config.read('config.txt')
 
-# Construct the MongoDB connection string
-mongo_connection_string = f"mongodb://{config.get('database', 'host')}:{config.get('database', 'port')}"
 
 # Establish the connection
-client = MongoClient(mongo_connection_string)
-
-
+client = MongoClient(f"mongodb://{config.get('database', 'host')}:{config.get('database', 'port')}")
 
 # Access the database
 db = client[config.get('database', 'db')]

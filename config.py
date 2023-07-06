@@ -1,7 +1,28 @@
 import configparser
-from sqlalchemy import create_engine
+from pymongo import MongoClient
+import pymongo
 
 config = configparser.ConfigParser()
 config.read('config.txt')
 
-engine = create_engine(config.get('database', 'con'))
+# Construct the MongoDB connection string
+mongo_connection_string = f"mongodb://{config.get('database', 'host')}:{config.get('database', 'port')}"
+
+# Establish the connection
+client = MongoClient(mongo_connection_string)
+
+
+
+# Access the database
+db = client[config.get('database', 'db')]
+
+# Test MongoDB connection
+try:
+    client.server_info()
+    print("Connected to MongoDB!")
+    # auth.seed_initial_admin_user(mongo_db)
+except pymongo.errors.ConnectionFailure:
+    print("Failed to connect to MongoDB.")
+
+
+collection = db["users"]

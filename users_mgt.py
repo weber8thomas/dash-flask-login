@@ -1,100 +1,66 @@
-from sqlalchemy import Table
-from sqlalchemy.sql import select
-from sqlalchemy.orm import Session
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash
-from config import engine
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from bson.objectid import ObjectId
+from config import db, collection
 
-db = SQLAlchemy()
+class User(UserMixin):
+    def __init__(self, username, password):
+        self.id = username
+        self.username = username
+        self.password = password
 
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(15), unique=True)
-    email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(80))
-
-
-# User_tbl = Table('user', User.metadata)
-
-
-def create_user_table():
-    User.metadata.create_all(engine)
-
-def delete_user_table():
-    User.__table__.drop(engine)
+    @staticmethod
+    def get(user_id):
+        user = collection.find_one({'username': user_id})
+        if not user:
+            return None
+        return User(username=user['username'], password=user['password'])
 
 
-def add_user(username, password, email):
-    hashed_password = generate_password_hash(password, method='sha256')
+# class User(UserMixin):
 
-     # Create a new User object
-    new_user = User(username=username, email=email, password=hashed_password)
+#     def __init__(self, username, email, password, _id=None):
+#         self._id = _id
+#         self.username = username
+#         self.email = email
+#         self.password = password
 
-    # Create a new session
-    session = Session(engine)
+#     @staticmethod
+#     def add_user(username, password, email):
+#         hashed_password = generate_password_hash(password, method='sha256')
 
-    # Add the new user to the session
-    session.add(new_user)
+#         new_user = {
+#             "username": username, 
+#             "email": email, 
+#             "password": hashed_password
+#         }
 
-    # Commit the session to write the new user to the database
-    session.commit()
+#         User.collection.insert_one(new_user)
 
-    # Close the session to end the transaction
-    session.close()
+#     @staticmethod
+#     def del_user(username):
+#         User.collection.delete_one({"username": username})
 
-# def add_user(username, password, email):
-#     hashed_password = generate_password_hash(password, method='sha256')
+#     @staticmethod
+#     def show_users():
+#         users = User.collection.find({}, {"username": 1, "email": 1})
 
-#     ins = User_tbl.insert().values(
-#         username=username, email=email, password=hashed_password)
+#         for user in users:
+#             print(user)
 
-#     conn = engine.connect()
-#     conn.execute(ins)
-#     conn.close()
+#     @staticmethod
+#     def find_by_id(user_id):
+#         user_data = User.collection.find_one({"_id": ObjectId(user_id)})
+#         if user_data:
+#             return User(user_data["username"], user_data["email"], user_data["password"], user_data["_id"])
+#         return None
 
+#     @staticmethod
+#     def find_by_username(username):
+#         user_data = User.collection.find_one({"username": username})
+#         if user_data:
+#             return User(user_data["username"], user_data["email"], user_data["password"], user_data["_id"])
+#         return None
 
-
-def del_user(username):
-    # Create a new session
-    session = Session(engine)
-
-    # Find the user to delete
-    user_to_delete = session.query(User).filter(User.username == username).first()
-
-    if user_to_delete is not None:
-        # Delete the user and commit the changes
-        session.delete(user_to_delete)
-        session.commit()
-
-    # Close the session to end the transaction
-    session.close()
-
-# def del_user(username):
-#     delete = User_tbl.delete().where(User_tbl.c.username == username)
-
-#     conn = engine.connect()
-#     conn.execute(delete)
-    # conn.close()
-
-
-def show_users():
-    session = Session(engine)  # create a Session using your engine
-
-    users = session.query(User.username, User.email).all()  # perform the query
-
-    for user in users:
-        print(user)
-
-    session.close() 
-
-# def show_users():
-#     select_st = select([User_tbl.c.username, User_tbl.c.email])
-
-#     conn = engine.connect()
-#     rs = conn.execute(select_st)
-
-#     for row in rs:
-#         print(row)
-
-#     conn.close()
+#     def get_id(self):
+#         return str(self._id)

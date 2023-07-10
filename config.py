@@ -15,7 +15,7 @@ db = client[config.get('database', 'db')]
 # Test MongoDB connection
 try:
     client.server_info()
-    print("Connected to MongoDB!")
+    # print("Connected to MongoDB!")
     # auth.seed_initial_admin_user(mongo_db)
 except pymongo.errors.ConnectionFailure:
     print("Failed to connect to MongoDB.")

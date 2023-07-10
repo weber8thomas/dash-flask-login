@@ -5,23 +5,29 @@ from flask_login import LoginManager, UserMixin
 from config import client, config
 from users_mgt import User
 from config import collection
+from flask_session import Session
+import dash_bootstrap_components as dbc
 
 app = Dash(
     __name__,
+    # meta_tags=[
+    #     {
+    #         'charset': 'utf-8',
+    #     },
+    #     {
+    #         'name': 'viewport',
+    #         'content': 'width=device-width, initial-scale=1, shrink-to-fit=no'
+    #     }
+    # ],
     meta_tags=[
-        {
-            'charset': 'utf-8',
-        },
-        {
-            'name': 'viewport',
-            'content': 'width=device-width, initial-scale=1, shrink-to-fit=no'
-        }
-    ]
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ],
+    external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 server = app.server
 app.config.suppress_callback_exceptions = True
-app.css.config.serve_locally = True
-app.scripts.config.serve_locally = True
+# app.css.config.serve_locally = True
+# app.scripts.config.serve_locally = True
 
 # db.init_app(server)
 
@@ -34,12 +40,19 @@ app.scripts.config.serve_locally = True
 #     }
 # )
 
+# print(os.urandom(12))
 server.config.update(
-    SECRET_KEY=os.urandom(12),
+    SECRET_KEY="secret_key",
+    # SECRET_KEY=os.urandom(12),
+    SESSION_TYPE='filesystem',
+    SESSION_FILE_DIR='flask_session',
+
 )
 
 
-
+# print(app.config)
+# print(server.config)
+Session(app)
 
 # Create User class with UserMixin
 
@@ -78,7 +91,7 @@ def load_user(user_id):
     user_d_password = user_d["password"]
     user_d_email = user_d["email"]
     u = User(user_d_username, user_d_password, user_d_email, user_d_id)
-    print(u)
+    # print(u)
     if not u:
         return None
     return u

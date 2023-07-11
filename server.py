@@ -22,7 +22,8 @@ app = Dash(
     meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ],
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    use_pages=True
 )
 server = app.server
 app.config.suppress_callback_exceptions = True

@@ -61,6 +61,12 @@ def display_page(pathname):
         return success.layout
         # else:
         #     return login_fd.layout
+    elif pathname == "/design-visualisation":
+        return success.layout
+    elif pathname == "/dashboard":
+        return success.layout
+    elif pathname == "/pivot-table":
+        return success.layout
     elif pathname == '/logout':
         if current_user.is_authenticated:
             logout_user()

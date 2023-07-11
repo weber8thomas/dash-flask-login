@@ -14,6 +14,10 @@ import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
 import dash
+from pages import design_visualisation, pivot_table, dashboard
+
+import dash_mantine_components as dmc
+
 
 # warnings.filterwarnings("ignore")
 
@@ -66,6 +70,48 @@ sidebar_header = dbc.Row(
     ]
 )
 
+# full_menu_style = dbc.Nav(
+#     [
+#         dbc.NavLink(
+#             "Home",
+#             href="/success",
+#             id={"type": "nav-link", "index": "home"},
+#             active=False,
+#             children=[html.I(className="material-icons"), "Home"],
+#         ),
+#         dbc.NavLink(
+#             "Visualisation design",
+#             href="/design-visualisation",
+#             id={"type": "nav-link", "index": "design-visualisation"},
+#             active=False,
+#             children=[html.I(className="material-icons"), "Design"],
+#         ),
+#     ],
+#     vertical=True,
+#     pills=True,
+#     id="full-menu",
+# )
+
+# icon_menu_style = dbc.Nav(
+#     [
+#         dbc.NavLink(
+#             html.I(className="material-icons"),
+#             href="/success",
+#             id={"type": "nav-link", "index": "home"},
+#             active=False,
+#         ),
+#         dbc.NavLink(
+#             html.I(className="material-icons"),
+#             href="/design-visualisation",
+#             id={"type": "nav-link", "index": "design-visualisation"},
+#             active=False,
+#         ),
+#     ],
+#     vertical=True,
+#     pills=True,
+#     id="icon-menu",
+# )
+
 sidebar = html.Div(
     [
         sidebar_header,
@@ -86,6 +132,21 @@ sidebar = html.Div(
             dbc.Nav(
                 [
                     dbc.NavLink("Home", href="/success", active="exact"),
+                    dbc.NavLink(
+                        "Visualisation design",
+                        href="/design-visualisation",
+                        active="exact",
+                    ),
+                    dbc.NavLink(
+                        "Dashboard design",
+                        href="/dashboard",
+                        active="exact",
+                    ),
+                    dbc.NavLink(
+                        "Data exploration",
+                        href="/pivot-table",
+                        active="exact",
+                    ),
                     # dbc.NavLink("Page 1", href="/page-1", active="exact"),
                     # dbc.NavLink("Page 2", href="/page-2", active="exact"),
                 ],
@@ -93,6 +154,45 @@ sidebar = html.Div(
                 pills=True,
             ),
             id="collapse",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.NavLink(
+                        dmc.Avatar(
+                            src="https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes"
+                            "-computer-wallpaper-thumbnail.png",
+                            size="lg",
+                            radius="xl",
+                        ),
+                        href="/login",
+                        target="_blank",
+                        style={
+                            "display": "block",
+                            "width": "100%",
+                            "marginBottom": "10px",
+                            "position": "absolute",
+                            "bottom": "0",
+                        },
+                    )
+                ),
+                dbc.Col(
+                    dbc.NavLink(
+                        html.Div(
+                            ["User name"],
+                            id="user-name",
+                        ),
+                        href="/login",
+                        target="_blank",
+                        style={
+                            "position": "absolute",
+                            "bottom": "0",
+                            "marginBottom": "22px",
+                            "marginLeft": "-90px",
+                        },
+                    )
+                ),
+            ]
         ),
         html.Div(
             className="header",
@@ -116,6 +216,7 @@ sidebar = html.Div(
     # style={"position": "relative"},
 )
 
+
 content = html.Div(id="page-content-success")
 
 # app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
@@ -125,6 +226,13 @@ content = html.Div(id="page-content-success")
 def render_page_content(pathname):
     if pathname == "/success":
         return html.P("This is the content of the home page!")
+    elif pathname == "/design-visualisation":
+        return design_visualisation.layout
+    elif pathname == "/dashboard":
+        return dashboard.layout
+    elif pathname == "/pivot-table":
+        print(pivot_table.layout)
+        return pivot_table.layout
     # elif pathname == "/page-1":
     #     return html.P("This is the content of page 1. Yay!")
     # elif pathname == "/page-2":
@@ -140,15 +248,31 @@ def render_page_content(pathname):
     # )
 
 
+# @app.callback(
+#     Output("sidebar", "className"),
+#     [Input("sidebar-toggle", "n_clicks")],
+#     [State("sidebar", "className")],
+# )
+# def toggle_classname(n, classname):
+#     if n and classname == "":
+#         return "collapsed"
+#     return ""
+
+
 @app.callback(
     Output("sidebar", "className"),
+    Output("page-content", "className"),
     [Input("sidebar-toggle", "n_clicks")],
     [State("sidebar", "className")],
+    [State("page-content", "className")],
 )
-def toggle_classname(n, classname):
-    if n and classname == "":
-        return "collapsed"
-    return ""
+def toggle_classname(n, sidebar_classname, content_classname):
+    if n:
+        if sidebar_classname == "":
+            return "collapsed", "collapsed"
+        else:
+            return "", ""
+    return sidebar_classname, content_classname
 
 
 @app.callback(
@@ -180,10 +304,18 @@ def user_logout(input1):
 
 
 layout = html.Div(
-    children=[
-        html.Div([sidebar, content]),
-    ]
+    dbc.Row(
+        [
+            dbc.Col(
+                sidebar,
+                width={"size": 3, "order": 1, "offset": 2},
+                id="sidebar-container",
+            ),
+            dbc.Col(content, width={"size": 9, "order": 2}, id="content-container"),
+        ]
+    )
 )
+# print(layout)
 
 # Create success layout
 # layout = html.Div(

@@ -13,8 +13,6 @@ import ast
 import pandas
 
 
-# TO REGISTER THE PAGE INTO THE MAIN APP.PY
-# app = dash.Dash(__name__)
 dash.register_page(__name__, path="/dashboard")
 
 
@@ -26,35 +24,6 @@ external_stylesheets = [
     },
 ]
 
-# app = dash.Dash(
-#     __name__,
-#     external_stylesheets=external_stylesheets,
-#     # suppress_callback_exceptions=True,
-# )
-
-
-# Add the following line
-# app.index_string = """
-# <!DOCTYPE html>
-# <html>
-#     <head>
-#         {%metas%}
-#         <title>{%title%}</title>
-#         {%favicon%}
-#         {%css%}
-#         <!-- Add the following link -->
-#         <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-#     </head>
-#     <body>
-#         {%app_entry%}
-#         <footer>
-#             {%config%}
-#             {%scripts%}
-#             {%renderer%}
-#         </footer>
-#     </body>
-# </html>
-# """
 
 df = pd.read_csv(
     "https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv"

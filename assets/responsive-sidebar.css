@@ -50,6 +50,11 @@
     transition: top 0.3s ease-in-out;
   }
 
+  #page-content.collapsed {
+    margin-left: 2rem;
+    padding-right: 0.5rem;
+  }
+
   #sidebar.collapsed {
     margin-left: -17.5rem;
     padding-right: 0.5rem;
@@ -84,24 +89,9 @@
     margin-left: 22rem;
     margin-right: 2rem;
     transition: margin-left 0.3s ease-in-out;
+    /* padding: 60px; */
   }
-}
 
-#sidebar-container {
-  flex-grow: 1;
-  transition: flex-grow 0.3s ease-in-out;
-}
-
-#content-container {
-  flex-grow: 3;
-  transition: flex-grow 0.3s ease-in-out;
-}
-
-#sidebar-container.collapsed {
-  flex-grow: 0.2;
-}
-
-@media (min-width: 48em) {
   #sidebar-container {
     transition: flex-grow 0.3s ease-in-out;
   }
@@ -115,3 +105,4 @@
     transition: flex-grow 0.3s ease-in-out;
   }
 }
+

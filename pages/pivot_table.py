@@ -3,7 +3,7 @@ import dash
 from dash.dependencies import Input, Output
 from dash import dcc, html
 import dash_pivottable
-import dash_table
+# import dash_table
 import dash_bootstrap_components as dbc
 import os, sys
 
@@ -26,7 +26,7 @@ raw_data = pd.read_csv(
 )
 # data = data.columns + data.values
 raw_data.columns = [e.replace(" ", "") for e in list(raw_data.columns)]
-print(raw_data)
+# print(raw_data)
 # print(data.values)
 data = [[e.replace(" ", "") for e in list(raw_data.columns)]] + raw_data.values.tolist()
 # print(data)

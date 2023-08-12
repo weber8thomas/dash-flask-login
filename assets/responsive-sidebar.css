@@ -6,6 +6,12 @@
   padding: 2rem 1rem;
   background-color: #f8f9fa;
 }
+/* 
+#sidebar.collapsed .nav-link span {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+} */
 
 #sidebar h2 {
   text-align: left;
@@ -32,6 +38,7 @@
   padding: 2rem 1rem;
 }
 
+
 @media (min-width: 48em) {
   #sidebar {
     position: fixed;
@@ -42,6 +49,10 @@
     text-align: left;
     transition: margin 0.3s ease-in-out, padding 0.3s ease-in-out;
   }
+
+
+
+
 
   #sidebar-toggle {
     display: inline-block;
@@ -64,11 +75,11 @@
     top: -2rem;
   }
 
-  #sidebar.collapsed ~ #page-content {
+  #sidebar.collapsed~#page-content {
     margin-left: 6.5rem;
   }
 
-  #sidebar.collapsed > *:not(:first-child) {
+  #sidebar.collapsed>*:not(:first-child) {
     margin-left: -6rem;
     margin-right: 6rem;
   }
@@ -105,4 +116,3 @@
     transition: flex-grow 0.3s ease-in-out;
   }
 }
-

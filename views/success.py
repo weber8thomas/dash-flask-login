@@ -46,6 +46,65 @@ sidebar_header = dbc.Row(
 )
 
 
+# links with text
+nav_links_text = [
+    dbc.NavLink(
+        [html.I(className="fas fa-home"), " Home"],
+        href="/success",
+        active="exact",
+    ),
+    dbc.NavLink(
+        [html.I(className="fas fa-palette"), " Visualisation design"],
+        href="/design-visualisation",
+        active="exact",
+    ),
+    dbc.NavLink(
+        [html.I(className="fas fa-th-large"), " Dashboard design"],
+        href="/dashboard",
+        active="exact",
+    ),
+    dbc.NavLink(
+        [html.I(className="fas fa-search"), " Data exploration"],
+        href="/pivot-table",
+        active="exact",
+    ),
+]
+
+# links without text (icons only)
+nav_links_icon = [
+    dbc.NavLink(
+        html.I(className="fas fa-home"),
+        href="/success",
+        active="exact",
+    ),
+    dbc.NavLink(
+        html.I(className="fas fa-palette"),
+        href="/design-visualisation",
+        active="exact",
+    ),
+    dbc.NavLink(
+        html.I(className="fas fa-th-large"),
+        href="/dashboard",
+        active="exact",
+    ),
+    dbc.NavLink(
+        html.I(className="fas fa-search"),
+        href="/pivot-table",
+        active="exact",
+    ),
+]
+
+# use the Collapse component to animate hiding / revealing links
+collapse = dbc.Collapse(
+    dbc.Nav(
+        id="nav_links",
+        vertical=True,
+        pills=True,
+    ),
+    id="collapse",
+)
+
+
 sidebar = html.Div(
     [
         sidebar_header,
@@ -62,6 +121,7 @@ sidebar = html.Div(
             id="blurb",
         ),
         # use the Collapse component to animate hiding / revealing links
+        # collapse,
         dbc.Collapse(
             dbc.Nav(
                 [
@@ -131,11 +191,22 @@ sidebar = html.Div(
             ]
         ),
     ],
+    className="sidebar",
     id="sidebar",
 )
 
 
 content = html.Div(id="page-content-success")
+
+
+# @app.callback(Output("nav_links", "children"), [Input("sidebar", "className")])
+# def update_nav_links(className):
+#     print(className)
+#     if className == "collapsed":
+#         print("TOTO")
+#         return nav_links_icon
+#     else:
+#         return nav_links_text
 
 
 @app.callback(Output("page-content-success", "children"), [Input("url", "pathname")])

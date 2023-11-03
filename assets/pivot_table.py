@@ -13,7 +13,7 @@ import os, sys
 # from dev import utils
 # TO REGISTER THE PAGE INTO THE MAIN APP.PY
 # app = dash.Dash(__name__)
-dash.register_page(__name__, path="/pivot-table", title="Pivot Table")
+# dash.register_page(__name__, path="/pivot-table", title="Pivot Table")
 
 layout = html.Div([])
 

@@ -13,7 +13,7 @@ import ast
 import pandas
 
 
-dash.register_page(__name__, path="/dashboard")
+# dash.register_page(__name__, path="/dashboard")
 
 
 external_stylesheets = [

@@ -16,6 +16,7 @@ app = Dash(
     use_pages=True,
     suppress_callback_exceptions = True
 )
+app.enable_dev_tools(debug=True)
 server = app.server
 
 
@@ -44,6 +45,7 @@ login_manager.login_view = "/login"
 @login_manager.user_loader
 def load_user(user_id):
     user_d = collection.find_one({"_id": ObjectId(user_id)})
+    print(user_d)
     user_d_id = user_d["_id"]
     user_d_username = user_d["email"]
     user_d_email = user_d["email"]
